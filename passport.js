@@ -6,7 +6,9 @@ const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
 
 
-const setup = (jwtKey) => {
+const setup = (pool, jwtKey) => {
+
+    const userUtil = require('./util/user').setup(pool);
 
     debug('Key: '+ jwtKey);
     const jwtOptions = {
@@ -14,21 +16,10 @@ const setup = (jwtKey) => {
         secretOrKey: jwtKey
     };
     
-    const strategy = new JwtStrategy(jwtOptions, (payload, next) => {
+    const strategy = new JwtStrategy(jwtOptions, async (payload, next) => {
       debug('payload received', payload);
-      // usually this would be a database call:
-      if (payload.id === 1) {
-          const user = {
-              id: 1,
-              login: 'test@example.com',
-              firstName: 'Max',
-              lastName: 'Testuser'
-          };
-          next(null, user)
-      }
-      else {
-          next(null, false);
-      }
+      const user = await userUtil.getUserById(payload.id);
+      next(null, user);
     });
     
     passport.use(strategy);
