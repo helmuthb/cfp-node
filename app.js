@@ -29,6 +29,7 @@ const indexRouter = require('./routes/index');
 const tokenRouter = require('./routes/token').setup(passport, jwtKey);
 const localRouter = require('./routes/local').setup(pool, jwtKey);
 const profileRouter = require('./routes/profile').setup(pool, passport);
+const seriesRouter = require('./routes/series').setup(pool, passport);
 
 const app = express();
 
@@ -42,5 +43,6 @@ app.use('/', indexRouter);
 app.use('/token', tokenRouter);
 app.use('/local', localRouter);
 app.use('/profile', profileRouter);
+app.use('/series', seriesRouter);
 
 module.exports = app;
