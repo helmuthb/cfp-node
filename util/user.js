@@ -40,13 +40,19 @@ const setup = (pool) => {
 
     const getUserById = async (id) => {
         const res = await pool.query(sqlById, [id]);
+        if (!res || !res.rows[0]) {
+            return false;
+        }
         return stripUser(camelCase(res.rows[0]));
-    }
+    };
 
     const getUserByEmail = async (email) => {
         const res = await pool.query(sqlByEmail, [email]);
+        if (!res || !res.rows[0]) {
+            return false;
+        }
         return camelCase(res.rows[0]);
-    }
+    };
 
     const verifyLogin = async (email, password) => {
         if (!email || !password) {
@@ -142,7 +148,8 @@ const setup = (pool) => {
         const user = await getUserByEmail(email);
         const matchPasswd = await verifyHash(oldPassword, user.passwordHash);
         if (user && matchPasswd) {
-            await pool.query(sqlChangePassword, [user.id, newPassword]);
+            const passwordHash = await calcHash(newPassword);
+            await pool.query(sqlChangePassword, [user.id, passwordHash]);
             return true;
         }
         return false;

@@ -18,7 +18,7 @@ const setup = (pool, jwtKey) => {
     
     const strategy = new JwtStrategy(jwtOptions, async (payload, next) => {
       debug('payload received', payload);
-      const user = await userUtil.getUserById(payload.id);
+      const user = { id: payload.id };
       next(null, user);
     });
     

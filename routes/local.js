@@ -2,21 +2,10 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const debug = require('debug')('localRoute');
 
-
 const setup = (pool, jwtKey) => {
   const userUtil = require('../util/user').setup(pool);
+  const tokenUtil = require('../util/token').setup(jwtKey);
   const router = express.Router();
-
-  const signAndSend = (payload, res) => {
-    jwt.sign(payload, jwtKey, { expiresIn: '30m' }, (err, token) => {
-      if (err) {
-        res.status(500).send({error: err});
-      }
-      else {
-        res.send({message: 'ok', token: token});
-      }
-    });
-  };
 
   /* Login user */
   router.post('/login', async (req, res) => {
@@ -24,7 +13,7 @@ const setup = (pool, jwtKey) => {
     const password = req.body.password;
     const user = await userUtil.verifyLogin(email, password);
     if (user) {
-      signAndSend( { id: user.id }, res);
+      tokenUtil.signAndSend( { id: user.id }, res);
     }
     else {
       res.status(401).send({ error: 'Login not found or password wrong'});
@@ -60,7 +49,7 @@ const setup = (pool, jwtKey) => {
     const activationKey = req.body.activationKey;
     const user = await userUtil.activateUser(email, password, activationKey);
     if (user) {
-      signAndSend( { id: user.id }, res);
+      tokenUtil.signAndSend( { id: user.id }, res);
     }
     else {
       res.status(401).send({ error: 'Login not found, password wrong, or activationKey wrong'});
