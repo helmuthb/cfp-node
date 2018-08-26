@@ -7,7 +7,9 @@ const ROLE_CREATOR = "creator";
 const ROLE_REVIEWER = "reviewer";
 const ROLE_MENTOR = "mentor";
 
-const str2list = (object) => {
+const str2list = (obj) => {
+    // convert into string
+    const object = '' + obj;
     let list = [object];
     const parts = object.split(':');
     for (let i=parts.length-1; i>0; i--) {
@@ -22,6 +24,9 @@ const str2list = (object) => {
 };
 
 const sqlUserRoles = 'select count(*) as cnt from "role" where user_id=$1';
+const sqlAddRole = `
+    insert into "role" (user_id, role, object)
+    values ($1, $2, $3)`;
 
 const setup = (pool) => {
     const hasRole = async (userId, role, object) => {
@@ -60,8 +65,13 @@ const setup = (pool) => {
         return (res.rows[0] && res.rows[0].cnt);
     };
 
+    const addRole = async (userId, role, object) => {
+        const res = await pool.query(sqlAddRole, [userId, role, object]);
+        return;
+    };
+
     return { ROLE_ADMIN, ROLE_EDITOR, ROLE_CREATOR, ROLE_REVIEWER, ROLE_MENTOR,
-             hasRole };
+             hasRole, addRole };
 };
 
 module.exports = { setup };
