@@ -12,4 +12,4 @@ USER node
 
 RUN npm install
 
-CMD [ "/usr/local/bin/node", "/usr/src/app/bin/www" ]
+CMD [ "/usr/local/bin/node", "/usr/src/app/src/index.js" ]

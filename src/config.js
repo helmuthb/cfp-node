@@ -6,7 +6,7 @@ module.exports = {
   isProduction: env === "production",
   isTest: env === "test",
   isDevelopment: env === "development",
-  sessionKey: process.env.SESSION_KEYN || "7a98281f6b1641fd921310f030e5817f",
+  sessionKey: process.env.SESSION_KEY || "7a98281f6b1641fd921310f030e5817f",
   sessionTimeout: 30 * 24 * 60 * 60 * 1000, // 30 days
   db: {
     database: process.env.DB_NAME || "cfp",
