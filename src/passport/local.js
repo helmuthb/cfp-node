@@ -72,9 +72,9 @@ module.exports = {
 
             if (
               user &&
-              user.activationKey &&
-              user.activationKey === req.body.activationKey &&
-              verifyHash(password, user.passwordHash)
+              user.activation_key &&
+              user.activation_key === req.body.activation_key &&
+              verifyHash(password, user.password)
             ) {
               // activate first time users
               pool.query(
@@ -91,7 +91,7 @@ module.exports = {
             } else if (
               !user ||
               user.activationKey ||
-              !verifyHash(password, user.passwordHash)
+              !verifyHash(password, user.password)
             ) {
               // auth failed
               done(null, false);
