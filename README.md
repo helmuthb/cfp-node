@@ -47,6 +47,38 @@ POST /session
 ```
 This will login the user.
 
+### Update Password
+
+```
+POST /password
+
+{
+  "email": "user@example.com",
+  "password": "abcdef",
+  "new_password": "defghi"
+}
+```
+This will update the password. The user will also get an email that their password has been changed.
+
+### Get User Details
+
+```
+GET /session
+```
+```
+{
+  "first_name": "Joe",
+  "last_name": "Doe",
+  "email": "user@example.com"
+}
+```
+
+### Logout
+
+```
+DELETE /session
+```
+
 ## Setup
 
 ### Prepare Database

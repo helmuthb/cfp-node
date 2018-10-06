@@ -4,7 +4,7 @@ const { generateHash, verifyHash } = require("../passport/local");
 
 module.exports = ({ app, pool, config, authorize }) => {
   app.put("/password", authorize, (req, res) => {
-    if (!verifyHash(req.body.password, req.user.passwordHash)) {
+    if (!verifyHash(req.body.password, req.user.password)) {
       return res.sendStatus(401);
     }
     pool.query(
