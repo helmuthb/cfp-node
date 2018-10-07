@@ -50,15 +50,36 @@ This will login the user.
 ### Update Password
 
 ```
-POST /password
+PUT /password
 
 {
-  "email": "user@example.com",
   "password": "abcdef",
   "new_password": "defghi"
 }
 ```
-This will update the password. The user will also get an email that their password has been changed.
+This will update the password of the currently logged-in user.
+The user will also get an email that their password has been changed.
+
+### Reset Password
+
+```
+DELETE /password
+{
+  "email": "user@example.com"
+}
+```
+This will send the password reset link to the user.
+
+```
+POST /password
+{
+  "email": "user@example.com",
+  "new_password": "defghi",
+  "reset_key": "12345367276"
+}
+```
+This will reset the password.
+The user will also get an email that their password has been changed.
 
 ### Get User Details
 

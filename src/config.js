@@ -31,6 +31,10 @@ module.exports = {
       pass: process.env.MAIL_PASSWORD || ""
     }
   },
+  resetPassword: {
+    minChangedTime: 60 * 1000, // 1 minute
+    expiration: 24 * 60 * 60 * 1000 // 24 hours
+  },
   rateLimit: {
     api: {
       windowMs: 15 * 60 * 1000, // 15 minutes
@@ -40,6 +44,11 @@ module.exports = {
       windowMs: 60 * 60 * 1000, // 1 hour window
       max: 5, // start blocking after 5 requests
       message: "Too many accounts created from this IP, please try again later"
+    },
+    password: {
+      windowMs: 60 * 60 * 1000, // 1 hour window
+      max: 5, // start blocking after 5 requests
+      message: "Too many password changes from this IP, please try again later"
     },
     login: {
       windowMs: 60 * 60 * 1000, // window

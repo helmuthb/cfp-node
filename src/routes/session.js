@@ -12,7 +12,7 @@ const sendUser = (req, res) => {
   });
 };
 
-module.exports = ({ app, pool, config, authorize, passport }) => {
+module.exports = ({ app, pool, authorize, passport }) => {
   app
     .route("/session")
     .get(authorize, sendUser)

@@ -33,7 +33,7 @@ CREATE TABLE "user" (
   "admin" BOOLEAN,
   "activation_key" TEXT,
   "reset_key" TEXT,
-  "reset_timeout" TIMESTAMP,
+  "reset_time" TIMESTAMP,
   "created_at" TIMESTAMP NOT NULL,
   "updated_at" TIMESTAMP
 );

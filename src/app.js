@@ -50,9 +50,9 @@ module.exports = config => {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  routePassword({ app, pool, passport, config, authorize });
-  routeSession({ app, pool, passport, config, authorize });
-  routeUser({ app, pool, passport, config, authorize });
+  routePassword({ app, pool, passport, authorize });
+  routeSession({ app, pool, passport, authorize });
+  routeUser({ app, pool, passport, authorize });
 
   // return the app
   return app;
