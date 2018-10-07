@@ -2,6 +2,7 @@ const sendmail = require("../sendmail");
 const passwordReset = require("../templates/passwordReset");
 const passwordChanged = require("../templates/passwordChanged");
 const welcome = require("../templates/welcome");
+const emailUpdated = require("../templates/emailUpdated");
 const uuid = require("uuid/v4");
 const bcrypt = require("bcrypt");
 const config = require("../config");
@@ -36,30 +37,71 @@ const getUserForId = async (pool, id) => {
   return false;
 };
 
-const activateUser = async (pool, id) => {
-  await pool.query(
-    'update "user" ' +
-      " set activation_key=null, updated_at=now()" +
-      " where id = $1",
-    [id]
-  );
+const activateUser = async (pool, user, activation_key) => {
+  if (user.activation_key && user.activation_key == activation_key) {
+    await pool.query(
+      'update "user" ' +
+        " set activation_key=null, updated_at=now()" +
+        " where id = $1",
+      [user.id]
+    );
+    return { code: 200, content: { message: "User is now activated" } };
+  } else if (!user.activation_key) {
+    return { code: 409, content: { error: "User is already activated" } };
+  } else {
+    return { code: 400, content: { error: "Wrong activation key provided" } };
+  }
 };
 
-const verifiedUser = async (pool, email, password, activation_key) => {
+const updateUser = async (pool, user, { first_name, last_name, email }) => {
+  const init_i = 2;
+  let sqlParts = [];
+  let sqlArgs = [user.id];
+  let i = init_i;
+  let sendActivation = false;
+  if (first_name && first_name != user.first_name) {
+    sqlParts.push(`first_name=$${i}`);
+    sqlArgs.push(first_name);
+    user.first_name = first_name;
+    i++;
+  }
+  if (last_name && last_name != user.last_name) {
+    sqlParts.push(`last_name=$${i}`);
+    sqlArgs.push(last_name);
+    user.last_name = last_name;
+    i++;
+  }
+  if (email && email != user.email) {
+    sqlParts.push(`email=$${i}`);
+    sqlArgs.push(email);
+    user.email = email;
+    i++;
+    sqlParts.push(`activation_key=$${i}`);
+    user.activation_key = uuid();
+    sqlArgs.push(user.activation_key);
+    i++;
+    sendActivation = true;
+  }
+  if (i != init_i) {
+    sqlParts.push(`updated_at=now()`);
+    const sqlQuery =
+      'update "user" set ' + sqlParts.join(", ") + " where id=$1";
+    const res = await pool.query(sqlQuery, sqlArgs);
+    if (sendActivation) {
+      sendmail(user, emailUpdated);
+    }
+  }
+  return { code: 200, content: { message: "User updated" } };
+};
+
+const verifiedUser = async (pool, email, password) => {
   if (!password) {
     return false;
   }
   const user = await getUserForEmail(pool, email);
   if (user && verifyHash(password, user.password)) {
     // user found, and password is correct
-    if (!user.activation_key || user.activation_key == activation_key) {
-      // either no activation required, or correct key provided
-      if (user.activation_key) {
-        // activate user if not done yet
-        await activateUser(pool, user.id);
-      }
-      return user;
-    }
+    return user;
   }
   // all other cases: not authenticated
   return false;
@@ -72,6 +114,7 @@ module.exports = {
   generateHash,
   verifyHash,
   verifiedUser,
+  updateUser,
   createUser: async (pool, email, password, first_name, last_name) => {
     let user = await getUserForEmail(pool, email);
     if (user) {

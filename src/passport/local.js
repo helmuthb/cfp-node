@@ -14,12 +14,7 @@ module.exports = {
       new LocalStrategy(localConfig, async (req, email, password, done) => {
         try {
           // either the user or null
-          const user = await utilUser.verifiedUser(
-            pool,
-            email,
-            password,
-            req.body.activation_key
-          );
+          const user = await utilUser.verifiedUser(pool, email, password);
           done(null, user);
         } catch (err) {
           done(err);

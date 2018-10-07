@@ -9,7 +9,7 @@ const session = require("express-session");
 const RateLimit = require("express-rate-limit");
 const passport = require("passport");
 const PgSession = require("connect-pg-simple")(session);
-const authorize = require("./passport/authorize");
+const { isLoggedIn, isActivated } = require("./passport/authorize");
 const passportSetup = require("./passport");
 const routePassword = require("./routes/password.js");
 const routeSession = require("./routes/session.js");
@@ -50,9 +50,9 @@ module.exports = config => {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  routePassword({ app, pool, passport, authorize });
-  routeSession({ app, pool, passport, authorize });
-  routeUser({ app, pool, passport, authorize });
+  routePassword({ app, pool, passport, authorize: isLoggedIn });
+  routeSession({ app, pool, passport, authorize: isLoggedIn });
+  routeUser({ app, pool, passport, authorize: isLoggedIn });
 
   // return the app
   return app;
