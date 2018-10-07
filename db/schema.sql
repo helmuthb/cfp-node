@@ -7,7 +7,7 @@ CREATE TABLE "conference" (
   "url" TEXT NOT NULL,
   "logo_url" TEXT NOT NULL,
   "formats" TEXT NOT NULL,
-  "created_at" TIMESTAMP NOT NULL,
+  "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP
 );
 
@@ -18,7 +18,7 @@ CREATE TABLE "edition" (
   "end" DATE,
   "cfp_start" DATE,
   "cfp_end" DATE,
-  "created_at" TIMESTAMP NOT NULL,
+  "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP
 );
 
@@ -30,11 +30,11 @@ CREATE TABLE "user" (
   "first_name" TEXT NOT NULL,
   "last_name" TEXT NOT NULL,
   "password" TEXT,
-  "admin" BOOLEAN,
+  "admin" BOOLEAN DEFAULT FALSE,
   "activation_key" TEXT,
   "reset_key" TEXT,
   "reset_time" TIMESTAMP,
-  "created_at" TIMESTAMP NOT NULL,
+  "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP
 );
 
@@ -42,7 +42,7 @@ CREATE TABLE "profile" (
   "id" SERIAL CONSTRAINT "pk_profile" PRIMARY KEY,
   "user" INTEGER UNIQUE NOT NULL,
   "bio" TEXT NOT NULL,
-  "created_at" TIMESTAMP NOT NULL,
+  "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP
 );
 
@@ -56,7 +56,7 @@ CREATE TABLE "proposal" (
   "description" TEXT NOT NULL,
   "format" TEXT NOT NULL,
   "status" TEXT NOT NULL DEFAULT 'submitted',
-  "created_at" TIMESTAMP NOT NULL,
+  "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP
 );
 
@@ -73,7 +73,7 @@ CREATE TABLE "review" (
   "reviewer" INTEGER NOT NULL,
   "rating" INTEGER,
   "comment" TEXT NOT NULL,
-  "created_at" TIMESTAMP NOT NULL,
+  "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP,
   CONSTRAINT "pk_review" PRIMARY KEY ("proposal", "reviewer")
 );
@@ -88,7 +88,7 @@ CREATE TABLE "role" (
   "conference" INTEGER NOT NULL,
   "user" INTEGER NOT NULL,
   "role" TEXT NOT NULL,
-  "created_at" TIMESTAMP NOT NULL,
+  "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP,
   CONSTRAINT "pk_role" PRIMARY KEY ("conference", "user")
 );

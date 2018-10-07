@@ -2,20 +2,24 @@ const RateLimit = require("express-rate-limit");
 const sendmail = require("../sendmail");
 const welcome = require("../templates/welcome");
 const config = require("../config");
-
+const utilUser = require("../util/user");
 const rateLimit = new RateLimit(config.rateLimit.newUser);
 
-module.exports = ({ app, passport }) => {
-  app.post("/user", rateLimit, (req, res, next) =>
-    passport.authenticate("local-signup", (err, user, info) => {
-      if (err) {
-        return next(err);
-      }
-      if (!user) {
-        return res.status(401).send(info);
-      }
-      sendmail(user, welcome);
-      return res.sendStatus(201);
-    })(req, res, next)
-  );
+module.exports = ({ app, pool }) => {
+  app.route("/user").post(rateLimit, async (req, res, next) => {
+    try {
+      console.log(req);
+      const rc = await utilUser.createUser(
+        pool,
+        req.body.email,
+        req.body.password,
+        req.body.first_name,
+        req.body.last_name
+      );
+      res.status(rc.code).send(rc.content);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send({ error: err });
+    }
+  });
 };

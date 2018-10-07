@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon src/index.js",
     "lint": "eslint src",
-    "prettier": "prettier --write \"src/**/*.js\""
+    "prettier": "prettier --write \"src/**/*.js\"",
+    "test": "jasmine"
   },
   "repository": {
     "type": "git",
@@ -47,7 +48,9 @@
     "eslint": "^5.6.1",
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-prettier": "^3.0.0",
+    "jasmine": "^3.2.0",
     "nodemon": "^1.18.4",
-    "prettier": "^1.14.3"
+    "prettier": "^1.14.3",
+    "supertest": "^3.3.0"
   }
 }

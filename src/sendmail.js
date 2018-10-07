@@ -27,7 +27,7 @@ module.exports = (recipient, template, options) => {
       text,
       html
     };
-    transporter.sendMail(options, (error, info) => {
+    transporter.sendMail(mail, (error, info) => {
       if (error) {
         return console.log("SMTP ERROR", error);
       }
@@ -36,6 +36,6 @@ module.exports = (recipient, template, options) => {
   } else {
     console.log("MAIL TO:", to);
     console.log("SUBJECT:", subject);
-    console.log(text);
+    console.log(markdown);
   }
 };
